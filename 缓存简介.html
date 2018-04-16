@@ -233,9 +233,9 @@ code.language-yaml {
 <ol>
 <li>速度快，因为数据存在内存中；</li>
 <li>支持丰富数据类型，支持string，list，set，sorted set，hash；</li>
-<li>支持事务，操作都是原子性，所谓的原子性就是对数据的更改要么全部执行，要么全部不执行；</li>
+<li>支持事务，操作都是原子性，所谓的原子性就是对数据的更改要么全部执行，要么全部不执行(multi,exec)；</li>
 <li>丰富的特性：可用于缓存，消息，按key设置过期时间，过期后将会自动删除；</li>
-<li>提供了多种不同级别的持久化方式；</li>
+<li>提供了两种持久化方式（AOF，RDB）；</li>
 <li>支持lua脚本，配合lua脚本能够执行复杂的查询操作；</li>
 </ol>
 <h5 class="mume-header" id="rdbredis-database%E9%BB%98%E8%AE%A4">RDB（Redis DataBase默认）</h5>
@@ -250,10 +250,14 @@ code.language-yaml {
 <li>能够通过传递rdb文件来实现各个redis数据恢复</li>
 <li>RDB 可以最大化 Redis 的性能：父进程在保存 RDB 文件时唯一要做的就是 fork 出一个子进程，然后这个子进程就会处理接下来的所有保存工作，父进程无须执行任何磁盘 I/O 操作。</li>
 <li>RDB 在恢复大数据集时的速度比 AOF 的恢复速度要快。</li>
+<li>在写入rdb文件时，会先创建临时文件，写完后才改名为dump.rdb，这样出现问题时，至少能回退到上一个rdb</li>
 </ol>
 <h6 class="mume-header" id="%E7%BC%BA%E7%82%B9">缺点：</h6>
 
-<p>数据丢失，由于RDB是定时记录的快照，在生成快照之前的时候出现故障，会丢失数据</p>
+<ol>
+<li>数据丢失，由于RDB是定时记录的快照，在生成快照之前的时候出现故障，会丢失数据</li>
+<li>如果执行了flushall或者什么命令，他通过快照就不能回滚到指定操作了</li>
+</ol>
 <h5 class="mume-header" id="aof-append-only-file">AOF (Append-only file)</h5>
 
 <blockquote>
@@ -289,7 +293,7 @@ Redis 还可以在后台对 AOF 文件进行重写（rewrite），使得 AOF 文
 <li>type：返回 key 所储存的值的类型。</li>
 <li>eval：从 Redis 2.6.0 版本开始，通过内置的 Lua 解释器，可以使用 EVAL 命令对 Lua 脚本进行求值。</li>
 <li>script load &amp; evalsha ： script load把lua脚本加载到redis缓存中，并范围对应的脚本值，evalsha根据脚本值执行脚本</li>
-<li>save &amp; bgsave:直接保存/后台运行保存 当前redis的数据</li>
+<li>save &amp; bgsave:直接保存/（异步）运行保存 当前redis的数据</li>
 <li>更多的命令请看 <a href="http://doc.redisfans.com/">http://doc.redisfans.com/</a></li>
 </ol>
 <hr>
@@ -356,8 +360,7 @@ kafka挂掉，由于kafka启动的时候没有找到zookeeper，会出现启动�
 
 <ol>
 <li>随着并发量增加，redis读压力也增加，但是多数都是读操作，于是我们可以使用主从同步的方式解决这个问题，注意从redis关掉写入功能</li>
-<li>随着并发增加，redis写压力也增加，我们可以通过分片的方式，写入到不同的主redis，分片的工具有twitter的Twemproxy和豌豆荚的codis</li>
-<li></li>
+<li>随着并发增加，redis写压力也增加，我们可以通过分片的方式，写入到不同的主redis，分片的工具有twitter的Twemproxy和豌豆荚的codis和redis自带的redis-cluster</li>
 </ol>
 
       </div>
