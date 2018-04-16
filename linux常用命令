@@ -1,5 +1,5 @@
 ##ssh隧道
-ssh -qTfnN -D 7001 root@119.28.221.105
+ssh -qTfnN -D 7001 root@xxxx
 ## linux 光标回退hack
 printf '#!/bin/bash\necho doing something evil!\nexit\n\033[2Aecho
 doing something very nice!\n' > backdoor.sh
